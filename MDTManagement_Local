@@ -1,0 +1,1890 @@
+
+print("DEBUG: NAME HANDLER END")
+
+--	Name Handler
+
+local LocalPlayer = game.Players.LocalPlayer
+local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local mouse = game.Players.LocalPlayer:GetMouse()
+
+--[[
+local fullname = nil
+local lastname = nil
+
+local officerName = ""
+for i,v in pairs(game.ReplicatedStorage.PlayerData:GetChildren()) do
+	if v.Name == tostring(LocalPlayer.UserId) then
+		local letters = string.split(v.names.fname.Value,"")
+		fullname = (letters[1]..". "..v.names.lname.Value.."")
+		lastname = v.names.lname.Value
+	end
+end
+--]]
+print("DEBUG: NAME HANDLER SKIPPED (TEST GAME, RETURNING NAME VALUE(S) AS LEO ROSENBERG)")
+
+local fullname = "Leo Rosenberg"
+local lastname = "Rosenberg"
+print("DEBUG: NAME HANDLER END")
+
+
+print("DEBUG: LOCAL START")
+
+--	MDT Handler
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Events = ReplicatedStorage:WaitForChild("Events")
+local InformationEvents = Events:WaitForChild("InformationEvents")
+local SendTicket = Events:WaitForChild("MoneyEvents"):WaitForChild("SendTicket")
+print("DEBUG: LOCAL 32")
+local viewportmodule = require(game.ReplicatedStorage.Modules.Components.ViewportModel)
+local LoginFrame = script.Parent.Frame.LoginFrame
+print("DEBUG: LOCAL 35")
+local DesktopFrame = script.Parent.Frame:WaitForChild("DesktopFrame")
+local AvatarImg = DesktopFrame:WaitForChild("AvatarImg")
+local PlrName = DesktopFrame:WaitForChild("PlrName")
+local RankName = DesktopFrame:WaitForChild("RankName")
+local Bar = DesktopFrame:WaitForChild("Bar")
+local MainFrame = DesktopFrame:WaitForChild("MainFrame")
+local WeaponLookup = DesktopFrame:WaitForChild("WeaponLookup")
+local BasicFrame = MainFrame.BasicFrame
+local CurrentCallFrame = BasicFrame:WaitForChild("CurrentCallFrame")
+local EmptyText = CurrentCallFrame:WaitForChild("EmptyText")
+local CurrentCall = CurrentCallFrame:WaitForChild("CurrentCall")
+local CallLocation = CurrentCall:WaitForChild("CallLocation")
+local CallType = CurrentCall:WaitForChild("CallType")
+local CallNum = CurrentCall:WaitForChild("CallNum")
+local CallDesc = CurrentCall:WaitForChild("CallDesc")
+local AttachedUnits = CurrentCall:WaitForChild("AttachedUnits")
+local NewCallButton = CurrentCallFrame:WaitForChild("NewCallButton")
+local StatusFrame = BasicFrame.StatusFrame
+local BoloFrame = MainFrame.BoloFrame.Frame
+local BOLO_EmptyText = BoloFrame.EmptyText
+local BoloButton = BoloFrame.BoloButton
+local Audios = script.Parent.Audios
+local PersonLookup = DesktopFrame.PersonLookup
+local PersonInfoFrame = PersonLookup.InfoFrame
+local PersonSearchFrame = PersonLookup.SearchFrame
+local VehLookup = DesktopFrame.VehLookup
+local VehInfoFrame = VehLookup.InfoFrame
+local VehSearchFrame = VehLookup.SearchFrame
+local CarImg = VehInfoFrame.CarImg
+local CarColor = VehInfoFrame.CarColor
+local CarModel = VehInfoFrame.CarModel
+local CarPlate = VehInfoFrame.CarPlate
+local InsuranceStatus = VehInfoFrame.InsuranceStatus
+local StolenStatus = VehInfoFrame.StolenStatus
+local WarrantStatus = VehInfoFrame.WarrantStatus
+local CitationFrame = VehInfoFrame.CitationFrame
+local Reports = DesktopFrame.Reports
+local ActiveCalls = Reports.ActiveCallsFrame.ActiveCalls
+
+local v57 = Instance.new("Camera", script)
+v57.CameraType = Enum.CameraType.Scriptable
+local l__Viewport__58 = VehInfoFrame.ViewportFrame.Viewport
+local v59 = Vector3.new(0, 0, 0)
+l__Viewport__58.CurrentCamera = v57
+local v60 = Instance.new("Camera", script)
+v60.CameraType = Enum.CameraType.Scriptable
+local l__Viewport__61 = WeaponLookup.InfoFrame.ViewportFrame.Viewport
+local v62 = Vector3.new(0, 0, 0)
+l__Viewport__61.CurrentCamera = v60
+
+
+local CheckTeam = Events:WaitForChild("CheckTeam")
+local StatusEvent = InformationEvents:WaitForChild("StatusEvent")
+local LicenseEvent = InformationEvents:WaitForChild("LicenseEvent")
+local NewCallEvent = InformationEvents:WaitForChild("NewCallEvent")
+local ModifyCallEvent = InformationEvents:WaitForChild("ModifyCallEvent")
+local ClearedCallEvent = InformationEvents:WaitForChild("ClearedCallEvent")
+local BoloEvent = InformationEvents:WaitForChild("BoloEvent")
+local CadLogEvent = InformationEvents:WaitForChild("CadLogEvent")
+local RadioEvent = InformationEvents:WaitForChild("RadioEvent")
+local SendLog = InformationEvents:WaitForChild("SendLog")
+local UserInfoFunction = InformationEvents:WaitForChild("UserInfoFunction")
+local GetInfo = InformationEvents:WaitForChild("GetInfo")
+
+local playerData = ReplicatedStorage.PlayerData:WaitForChild(tostring(Players.LocalPlayer.UserId))
+
+local Supervisor = false
+script.Parent.Frame.DesktopFrame.PlrName.Text = string.upper(lastname)
+local avatar = game.Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+script.Parent.Frame.DesktopFrame.AvatarImg.Image = avatar
+StatusEvent:FireServer()
+local supcheck = Events.PoliceEvents.CheckRank:InvokeServer("SupCheck")
+print("DEBUG: LOCAL END")
+
+
+
+
+
+print("DEBUG: SCRIPT")
+if supcheck ~= false then
+	Supervisor = true
+	DesktopFrame.RankName.Visible = true
+	DesktopFrame.RankName.Text = Events.PoliceEvents.CheckRank:InvokeServer("RankName")
+else
+	PersonInfoFrame.RevokeCCW.BackgroundColor3 = Color3.fromRGB(66, 66, 66)
+	PersonInfoFrame.RevokeHunting.BackgroundColor3 = Color3.fromRGB(66, 66, 66)
+	PersonInfoFrame.RevokeLicense.BackgroundColor3 = Color3.fromRGB(66, 66, 66)
+	PersonInfoFrame.SuspendLicense.BackgroundColor3 = Color3.fromRGB(66, 66, 66)
+	PersonInfoFrame.SuspendHunting.BackgroundColor3 = Color3.fromRGB(66, 66, 66)
+	PersonInfoFrame.SuspendCCW.BackgroundColor3 = Color3.fromRGB(66, 66, 66)
+end
+print("DEBUG: SUPERVISOR CHECK OVER")
+
+if LocalPlayer.Team.Name == "Civilian" then
+	script.Parent.Parent:Destroy()
+	return
+end
+print("DEBUG: CIVILIAN CHECK OVER")
+
+script.Parent.Frame.DesktopFrame.MainFrame.refresh.MouseButton1Click:Connect(function()
+	script.Parent.Frame.DesktopFrame.MainFrame.BasicFrame.StatusFrame.Frame.TextLabel.Text = "Refeshing please wait..."
+	mouse.Icon = "http://www.roblox.com/asset?id=5018892087"
+	StatusEvent:FireServer("10-8")
+	ClearActiveCall()
+	ModifyCallEvent:FireServer("ALL", "Deattach")
+	_G.ActiveCall = nil
+	local l__Marker__80 = LocalPlayer.PlayerGui:FindFirstChild("Marker")
+	if l__Marker__80 then
+		l__Marker__80:Destroy()
+	end
+	script.Parent.Frame.DesktopFrame.MainFrame.BasicFrame.StatusFrame.Frame.TextLabel.Text = "Refesh completed succesfully!"
+	wait(1)
+	script.Parent.Frame.DesktopFrame.MainFrame.BasicFrame.StatusFrame.Frame.TextLabel.Text = "STATUS"
+end)
+print("DEBUG: REFRESH FUNC OVER")
+
+LoginFrame.PlrName.Text = lastname .. "@" .. string.lower(LocalPlayer.Team.Name) .. ".gov"
+LoginFrame.Login.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	local v81 = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+	mouse.Icon = "http://www.roblox.com/asset?id=5018953955"
+	TweenService:Create(LoginFrame, v81, {
+		BackgroundTransparency = 1, 
+		BorderSizePixel = 0
+	}):Play()
+	for v82, v83 in pairs(LoginFrame:GetDescendants()) do
+		if v83:IsA("Frame") then
+			TweenService:Create(v83, v81, {
+				BackgroundTransparency = 1, 
+				BorderSizePixel = 0
+			}):Play()
+		elseif v83:IsA("TextLabel") then
+			TweenService:Create(v83, v81, {
+				BackgroundTransparency = 1, 
+				BorderSizePixel = 0, 
+				TextTransparency = 1, 
+				TextStrokeTransparency = 1
+			}):Play()
+		elseif v83:IsA("TextButton") then
+			TweenService:Create(v83, v81, {
+				BackgroundTransparency = 1, 
+				BorderSizePixel = 0, 
+				TextTransparency = 1, 
+				TextStrokeTransparency = 1
+			}):Play()
+		elseif v83:IsA("ImageLabel") then
+			TweenService:Create(v83, v81, {
+				ImageTransparency = 1
+			}):Play()
+		end
+	end
+	wait(1.3)
+	mouse.Icon = "http://www.roblox.com/asset?id=5018892087"
+	DesktopFrame.Visible = true
+	StatusEvent:FireServer("10-8")
+end)
+
+print("DEBUG: LOGIN FUNC OVER")
+script.Parent.Drag.Disabled = false
+script.Parent.Frame.DesktopFrame.MainFrame.DragBtn.MouseButton1Click:Connect(function()
+	script.Parent.Drag.Disabled = not script.Parent.Drag.Disabled
+end)
+print("DEBUG: DRAG ENABLED")
+local function v84(p1)
+	if p1 == nil then
+		return
+	end
+	local v85 = DesktopFrame:FindFirstChild(p1)
+	if v85 then
+		for v86, v87 in pairs(DesktopFrame:GetChildren()) do
+			if v87:IsA("Frame") and v87.Name ~= "Bar" and v87.Name ~= "MenuBar" and v87.Name ~= "PanicButton" and v87.Name ~= "Additonial" then
+				v87.Visible = false
+			end
+		end
+		v85.Visible = true
+	end
+end
+for v88, v89 in pairs(Bar:GetDescendants()) do
+	if v89:IsA("TextButton") then
+		v89.MouseButton1Click:Connect(function()
+			Audios.Click:Play()
+			v84(v89.Parent.Name)
+		end)
+	end
+end
+print("DEBUG: IDK WHAT THIS IS MENUBAR SOEMTHING")
+
+
+local u1 = false
+DesktopFrame.Additonial.PanicButtonPrompt.Cancel.MouseButton1Click:Connect(function()
+	u1 = true
+	DesktopFrame.Additonial.PanicButtonPrompt.Visible = false
+end)
+local u2 = false
+local u3 = false
+DesktopFrame.Bar.PanicButton.TextButton.MouseButton1Click:Connect(function()
+	if u2 == false then
+		u2 = true
+		u1 = false
+		u3 = false
+		DesktopFrame.Additonial.PanicButtonPrompt.CountDown.Text = "3"
+		DesktopFrame.Additonial.PanicButtonPrompt.Visible = true
+		local u4 = 3
+		coroutine.resume((coroutine.create(function()
+			while true do
+				wait(1)
+				if u1 == true then
+					return
+				end
+				u4 = u4 - 1
+				DesktopFrame.Additonial.PanicButtonPrompt.CountDown.Text = tostring(u4)
+				if u4 == 0 then
+					break
+				end
+				if u3 == true then
+					break
+				end			
+			end
+			StatusEvent:FireServer("Priority-1")
+			NewCallEvent:FireServer("PANIC BUTTON", "Police", "LOC. in call", LocalPlayer.Name .. " Actived their panic button [PRIORITY 1]", "PANIC")
+			RadioEvent:FireServer("Panic", "Please check your MDT")
+			u3 = false
+			u4 = 3
+			DesktopFrame.Additonial.PanicButtonPrompt.Visible = false
+		end)))
+		wait(10)
+		u2 = false
+	end
+end)
+print("DEBUG: PANIC FEATURE")
+
+
+for v90, v91 in pairs(StatusFrame:GetChildren()) do
+	if v91:IsA("TextButton") then
+		v91.MouseButton1Click:Connect(function()
+			print(v91)
+			Audios.Click:Play()
+			StatusEvent:FireServer(v91.Name)
+		end)
+	end
+end
+local l__CurrentStatus__5 = StatusFrame.CurrentStatus
+StatusEvent.OnClientEvent:Connect(function(p2, p3)
+	local v92 = tostring(LocalPlayer.UserId)
+	if p2[v92] then
+		l__CurrentStatus__5.Text = "CURRENT STATUS: " .. p2[v92].Status
+		if p2[v92].Status == "10-23" then
+			local l__Marker__93 = LocalPlayer.PlayerGui:FindFirstChild("Marker")
+			if l__Marker__93 then
+				l__Marker__93:Destroy()
+			end
+		end
+	end
+end)
+print("DEBUG: STATUS FEATURE")
+
+--	Date
+local date = os.date("!*t")
+function CheckMonth()
+	if date.month == 1 then
+		return "January"
+	end
+	if date.month == 2 then
+		return "February"
+	end
+	if date.month == 3 then
+		return "March"
+	end
+	if date.month == 4 then
+		return "April"
+	end
+	if date.month == 5 then
+		return "May"
+	end
+	if date.month == 6 then
+		return "Juni"
+	end
+	if date.month == 7 then
+		return "July"
+	end
+	if date.month == 8 then
+		return "August"
+	end
+	if date.month == 9 then
+		return "September"
+	end
+	if date.month == 10 then
+		return "October"
+	end
+	if date.month == 11 then
+		return "November"
+	end
+	if date.month == 12 then
+
+	else
+		return
+	end
+	return "December"
+end
+print("DEBUG: MONTH STUFF")
+
+local function gettime()
+	local curtime = os.time()
+	local curdate = os.date("!*t")
+	local v96 
+
+	if curdate.hour > 12 then
+		v96 = "PM"
+	else
+		v96 = "AM"
+	end
+
+	return tostring(curdate.hour > 12 and curdate.hour % 12 or curdate.hour) .. ":" .. (curdate.min < 10 and "0" .. curdate.min or tostring(curdate.min)) .. ":" .. (curdate.sec < 10 and "0" .. curdate.sec or tostring(curdate.sec)) .. " " .. v96
+end
+print("DEBUG: TIME STUFF")
+
+
+local TicketFrame = DesktopFrame.Additonial.Ticket.ScrollingFrame.Frame.TicketFrame.Frame
+local u8 = false
+local CheckRank = Events.PoliceEvents.CheckRank
+PersonInfoFrame.NewCitation.MouseButton1Click:connect(function()
+	TicketFrame.OffensesFrame.AddNewOffense.Visible = true
+	DesktopFrame.Additonial.Ticket.ScrollingFrame.Frame.TicketFrame.CaseNum.TextLabel.Text = tostring(1)
+	DesktopFrame.Additonial.Ticket.ScrollingFrame.Frame.TicketFrame.Frame.SignButton.Visible = true
+	Audios.Click:Play()
+	u8 = true
+	TicketFrame.DateFrame.Frame.TextLabel.Text = tostring(date.day) .. " " .. CheckMonth() .. " " .. tostring(date.year)
+	TicketFrame.TimeFrame.Frame.TextLabel.Text = gettime()
+	TicketFrame.DriverFrame.Driver.Text = PersonInfoFrame.PlrName.Text
+	TicketFrame.DepartmentFrame.Frame.TextLabel.Text = CheckRank:InvokeServer("Department")
+	TicketFrame.RankFrame.Frame.TextLabel.Text = CheckRank:InvokeServer("RankName")
+	TicketFrame.OfficerNameFrame.Frame.TextLabel.Text = fullname
+	DesktopFrame.Additonial.Ticket.Visible = true
+end)
+print("DEBUG: NEW TICKET")
+
+local maxoffenses = 0
+local maxedout = false
+local penalcode = require(game.ReplicatedStorage.Modules.Components.Crimesv2)
+local amount = 0
+
+TicketFrame.OffensesFrame.AddNewOffense.MouseButton1Click:Connect(function()
+	maxedout = maxoffenses ~= 3
+	if maxedout == true then
+		local ui = TicketFrame.OffensesFrame.Template.Frame:Clone()
+		for i, titles in pairs(penalcode.Titles) do
+			for i, offenses in pairs(titles.Offenses) do
+				if offenses.CrimeType == "Vehicle Offense" or offenses.Price then
+					local crimeui = ui.ScrollingFrame.Template:Clone()
+					crimeui.Name = offenses.Name
+					crimeui.Text = offenses.Name
+					crimeui.Visible = true
+					crimeui.Parent = ui.ScrollingFrame
+				end
+			end
+		end
+		ui.ScrollingFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+			ui.ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, ui.ScrollingFrame.UIListLayout.AbsoluteContentSize.Y)
+		end)
+		maxoffenses = maxoffenses + 1
+		ui.Name = "Offense" .. tostring(maxoffenses)
+		ui.Visible = true
+		ui.Parent = TicketFrame.OffensesFrame.ScrollFrame
+		ui.Clear.MouseButton1Click:Connect(function()
+			maxoffenses = maxoffenses - 1
+			ui:Destroy()
+		end)
+		ui.Charge.MouseButton1Click:Connect(function()
+			if ui.ScrollingFrame.Visible == false then
+				ui.ScrollingFrame.Visible = true
+				return
+			end
+			ui.ScrollingFrame.Visible = false
+		end)
+		for i, charges in pairs(ui.ScrollingFrame:GetChildren()) do
+			if charges:IsA("TextButton") then
+				charges.MouseButton1Click:Connect(function()
+					ui.Charge.Text = charges.Text
+					local crime = penalcode.GetCrime(ui.Charge.Text)
+					ui.Price.Text = "Price: $" .. tostring(crime.Price)
+					amount = amount + crime.Price
+					ui.ScrollingFrame.Visible = false
+				end)
+			end
+		end
+	end
+end)
+print("DEBUG: TICEKT NEW OFFENSE")
+
+DesktopFrame.Additonial.Ticket.CloseFrame.close.MouseButton1Click:Connect(function()
+	DesktopFrame.Additonial.Ticket.Visible = false
+	DesktopFrame.Additonial.Ticket.ScrollingFrame.Frame.TicketFrame.CitationTxt.Visible = false
+	DesktopFrame.Additonial.Ticket.ScrollingFrame.Frame.TicketFrame.CaseNum.Visible = false
+	for v106, v107 in pairs(DesktopFrame.Additonial.Ticket.ScrollingFrame.Frame.TicketFrame:GetDescendants()) do
+		if v107:IsA("TextBox") then
+			v107.ClearTextOnFocus = false
+			v107.TextEditable = true
+		end
+	end
+	for v108, v109 in pairs(TicketFrame.OffensesFrame.ScrollFrame:GetChildren()) do
+		if v109:IsA("Frame") then
+			v109:Destroy()
+		end
+	end
+	for v110, v111 in pairs(TicketFrame:GetDescendants()) do
+		if v111:IsA("TextBox") then
+			v111.Text = ""
+		end
+	end
+	u8 = false
+end)
+print("DEBUG: TICKET CLOSE")
+
+local PlayerName = PersonSearchFrame.PlayerName
+
+function GetVehicles()
+	local plrdata = nil
+	
+	if plrdata then
+		local carinfo = GetInfo:InvokeServer("Cars", PlayerName)
+		local v120 = 0
+		if carinfo then
+			local v121, v122, v123 = pairs(carinfo)
+			while true do
+				local v124, v125 = v121(v122, v123)
+				
+				v123 = v124
+				v120 = v120 + 1
+				local v126 = PersonInfoFrame.OwnedVehicles.Template:Clone()
+				v126.Visible = true
+				v126.Name = v125.Model
+				v126.Text = v125.Model .. " - " .. v125.Plate
+				v126.Parent = PersonInfoFrame.OwnedVehicles			
+			end
+		end
+		PersonInfoFrame.VehiclesText.Text = "VEHICLES (" .. v120 .. "):"
+	end
+end
+print("DEBUG: GETTING VEHICLES")
+
+local l__Check__16 = game.ReplicatedStorage.Remotes.Check
+PersonInfoFrame.Warrants.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function(p7)
+	PersonInfoFrame.Warrants.CanvasSize = UDim2.new(0, 0, 0, PersonInfoFrame.Warrants.UIListLayout.AbsoluteContentSize.Y)
+end)
+
+local function u17()
+	for v857, v858 in pairs(PersonInfoFrame.ArrestFrame.ScrollingFrame:GetChildren()) do
+		if v858.Name ~= "Template" and v858.Name ~= "UIListLayout" then
+			v858:Destroy()
+		end
+	end
+	for v859, v860 in pairs(PersonInfoFrame.Warrants:GetChildren()) do
+		if v860.Name ~= "Template" and v860.Name ~= "UIListLayout" then
+			v860:Destroy()
+		end
+	end
+	for v861, v862 in pairs(PersonInfoFrame.TicketFrame.ScrollingFrame:GetChildren()) do
+		if v862.Name ~= "Template" and v862.Name ~= "UIListLayout" then
+			v862:Destroy()
+		end
+	end
+	for v863, v864 in pairs(PersonInfoFrame.OwnedVehicles:GetChildren()) do
+		if v864.Name ~= "Template" and v864.Name ~= "UIListLayout" then
+			v864:Destroy()
+		end
+	end
+end
+print("DEBUG: 503")
+
+local u18 = false
+function UpdatePlayerInfo(action, user)
+	print(action, user)
+	
+	local userinfo = UserInfoFunction:InvokeServer(user.Name)
+	local tickets = GetInfo:InvokeServer("Tickets", user.Name)
+	local arrests = GetInfo:InvokeServer("Arrests", user.Name)
+	local ticks = tick()
+	
+	
+	if userinfo == false then
+		PlayerName.Text = ""
+		return
+	end
+		
+	-- Extracting relevant information and assigning to variables
+	local licenses = userinfo.Licenses
+	local characterInfo = userinfo.CharacterInfo
+	local criminalStats = userinfo.CriminalStats
+	local warrants = criminalStats.Warrants
+
+	-- Updating license status text and color
+	PersonInfoFrame.LicenseStatus.Text = licenses.DriversLicense
+	PersonInfoFrame.CCWStatus.Text = licenses.FirearmsLicense
+	PersonInfoFrame.HuntingStatus.Text = licenses.HuntingLicense
+	PersonInfoFrame.DOBText.Text = characterInfo.DOB
+	PersonInfoFrame.AddressText.Text = "N/A"
+
+	-- Checking if there is an active warrant
+	local hasActiveWarrant = #warrants > 0
+
+	-- Updating probation status text
+	local probationText = l__Check__16:InvokeServer("FelonTime", user) or "NONE"
+	PersonInfoFrame.Probation.Text = probationText
+
+	if hasActiveWarrant then
+		-- Displaying active warrant information
+		PersonInfoFrame.WarrantStatus.Visible = false
+		PersonInfoFrame.Warrants.Visible = true
+		Audios.ActiveStatus:Play()
+		PersonInfoFrame.Status.Text = "ACTIVE WARRANT"
+		PersonInfoFrame.Status.Visible = true
+
+		-- Adding warrant details to the UI
+		for _, warrant in ipairs(warrants) do
+			local warrantEntry = PersonInfoFrame.Warrants.Template:Clone()
+			warrantEntry.Visible = true
+			warrantEntry.Name = warrant.WarrantId
+			warrantEntry.Text = table.concat(warrant.Charges, " | ")
+			if string.len(table.concat(warrant.Charges, " | ")) >= 45 then
+				warrantEntry.TextWrapped = true
+				warrantEntry.Size = UDim2.new(0, 183, 0, 50)
+			end
+			warrantEntry.Parent = PersonInfoFrame.Warrants
+		end
+	else
+		-- No active warrants
+		PersonInfoFrame.Status.Text = ""
+		PersonInfoFrame.Status.Visible = false
+		PersonInfoFrame.WarrantStatus.Visible = true
+		PersonInfoFrame.Warrants.Visible = false
+	end
+
+	GetVehicles()
+
+	-- Sorting and displaying arrest records
+	local arrestRecords = {}
+	for arrestId, arrestData in pairs(arrests) do
+		arrestRecords[#arrestRecords + 1] = {
+			key = arrestId,
+			value = arrestData
+		}
+	end
+	table.sort(arrestRecords, function(a, b)
+		return b.value.UnixTime < a.value.UnixTime
+	end)
+	for _, arrestData in ipairs(arrestRecords) do
+		local arrestEntry = PersonInfoFrame.ArrestFrame.ScrollingFrame.Template:Clone()
+		arrestEntry.Name = arrestData.value.ArrestId
+		arrestEntry.Visible = true
+		arrestEntry.CaseNum.Text = arrestData.value.Date .. " | " .. arrestData.value.Time
+		if string.len(table.concat(arrestData.value.Charges, " | ")) >= 45 then
+			arrestEntry.Charges.TextWrapped = true
+		end
+		arrestEntry.Charges.Text = table.concat(arrestData.value.Charges, " | ")
+		arrestEntry.Parent = PersonInfoFrame.ArrestFrame.ScrollingFrame
+		wait()
+	end
+
+	-- Sorting and displaying ticket records
+	local ticketRecords = {}
+	for ticketNum, ticketData in pairs(tickets) do
+		ticketRecords[#ticketRecords + 1] = {
+			key = ticketNum,
+			value = ticketData
+		}
+	end
+	table.sort(ticketRecords, function(a, b)
+		return b.value.UnixTime < a.value.UnixTime
+	end)
+	for _, ticketData in ipairs(ticketRecords) do
+		local ticketEntry = PersonInfoFrame.TicketFrame.ScrollingFrame.Template:Clone()
+		ticketEntry.Visible = true
+		ticketEntry.Name = ticketData.value.TicketNum
+		ticketEntry.CaseNum.Text = ticketData.value.Date .. " | " .. ticketData.value.Time
+		if string.len(table.concat(ticketData.value.Charges, " | ")) >= 45 then
+			ticketEntry.Charges.TextWrapped = true
+			ticketEntry.Size = UDim2.new(0, 342, 0, 53)
+			ticketEntry.Charges.Size = UDim2.new(0, 289, 0, 45)
+		end
+		ticketEntry.Charges.Text = table.concat(ticketData.value.Charges, " | ")
+		ticketEntry.Parent = PersonInfoFrame.TicketFrame.ScrollingFrame
+		ticketEntry.Click.MouseButton1Click:Connect(function()
+			if DesktopFrame.Additonial.Ticket.Visible == false then
+				if u18 == false then
+					u18 = true
+					wait(0.5)
+					u18 = false
+				end
+			end
+		end)
+	end
+
+	local elapsedTime = tick() - ticks
+
+end
+print("DEBUG: GETTING PLAYER INFO")
+
+PersonInfoFrame.Close.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	u17()
+	PersonInfoFrame.Visible = false
+	PersonSearchFrame.Visible = true
+end)
+
+TicketFrame.SignButton.MouseButton1Click:Connect(function()
+	local v920 = nil
+	for v921, v922 in pairs(game.ReplicatedStorage.Players:GetChildren()) do
+		if v922:IsA("Folder") and v922.FullName.Value:lower() == PersonInfoFrame.PlrName.Text:lower() then
+			v920 = game.Players:FindFirstChild(v922.Name)
+			break
+		end
+	end
+	if not v920 then
+		return
+	end
+	if (char.HumanoidRootPart.Position - v920.Character.HumanoidRootPart.Position).magnitude >= 250 then
+		return
+	end
+	local v923 = true
+	local v924 = {}
+	local v925 = {}
+	local v926 = {}
+	for v927, v928 in pairs(TicketFrame:GetDescendants()) do
+		if v928:IsA("TextBox") then
+			if v928.Text:gsub(" ", "") ~= "" then
+				v924[v928.Name] = v928.Text
+			else
+				local v929 = TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+				TweenService:Create(v928, v929, {
+					PlaceholderColor3 = Color3.fromRGB(162, 0, 0)
+				}):Play()
+				wait(0.45)
+				TweenService:Create(v928, v929, {
+					PlaceholderColor3 = Color3.fromRGB(178, 178, 178)
+				}):Play()
+				v923 = false
+			end
+		end
+	end
+	if v923 == true and maxoffenses >= 1 then
+		for v930, v931 in pairs(TicketFrame.OffensesFrame.ScrollFrame:GetChildren()) do
+			if v931:IsA("Frame") then
+				table.insert(v925, v931.Charge.Text)
+			end
+		end
+		SendTicket:FireServer(PersonInfoFrame.PlrName.Text, v924, v925)
+		maxoffenses = 0
+		maxedout = false
+		amount = 0
+		for v932, v933 in pairs(TicketFrame:GetDescendants()) do
+			if v933:IsA("TextBox") and v933.Name ~= "Driver" then
+				v933.Text = ""
+			end
+		end
+		for v934, v935 in pairs(TicketFrame.OffensesFrame.ScrollFrame:GetChildren()) do
+			if v935:IsA("Frame") then
+				v935:Destroy()
+			end
+		end
+	end
+	local v936 = nil
+	for v937, v938 in pairs(game.ReplicatedStorage.Players:GetChildren()) do
+		if v938:IsA("Folder") and v938.FullName.Value:lower() == PersonInfoFrame.PlrName.Text:lower() then
+			v936 = game.Players:FindFirstChild(v938.Name)
+			break
+		end
+	end
+	UpdatePlayerInfo(PersonInfoFrame.PlrName.Text, v936)
+end)
+
+
+PlayerName.FocusLost:Connect(function(p14)
+	local v939 = nil
+	local v940 = nil
+	for v941, v942 in pairs(game.ReplicatedStorage.Players:GetChildren()) do
+		if v942:IsA("Folder") and v942.FullName.Value:lower() == PlayerName.Text:lower() then
+			v940 = game.Players:FindFirstChild(v942.Name)
+			v939 = v942.FullName.Value
+			break
+		end
+	end
+	if not v939 then
+		Audios.Error:Play()
+		PlayerName.Text = ""
+		return
+	end
+	mouse.Icon = "http://www.roblox.com/asset?id=5018953955"
+	UpdatePlayerInfo(v939, v940)
+	wait(1)
+	mouse.Icon = "http://www.roblox.com/asset?id=5018892087"
+	PersonInfoFrame.Visible = true
+	PersonSearchFrame.Visible = false
+	PlayerName.Text = ""
+end)
+
+
+PersonInfoFrame.SuspendLicense.MouseButton1Click:Connect(function()
+	local v943, v944 = Events.PoliceEvents.CheckRank:InvokeServer("SupCheck")
+	if Supervisor == true and v943 == true then
+		Audios.Click:Play()
+		if PersonInfoFrame.LicenseStatus.Text == "NONE" or PersonInfoFrame.LicenseStatus.Text == "REVOKED" or PersonInfoFrame.LicenseStatus.Text == "SUSPENDED" then
+			return
+		end
+		script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Visible = true
+		script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Title.Text = "SUSPEND DRIVERS LICENSE"
+		local u19 = nil
+		local u20 = nil
+		u19 = script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Submit.MouseButton1Click:Connect(function()
+			LicenseEvent:FireServer("SuspendDriver", PersonInfoFrame.PlrName.Text, script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.CallDescFrame.TextBox.Text, LocalPlayer.Name)
+			script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.CallDescFrame.TextBox.Text = ""
+			script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Visible = false
+			wait(0.05)
+			local v945 = nil
+			for v946, v947 in pairs(game.ReplicatedStorage.Players:GetChildren()) do
+				if v947:IsA("Folder") and v947.FullName.Value:lower() == PersonInfoFrame.PlrName.Text:lower() then
+					v945 = game.Players:FindFirstChild(v947.Name)
+					break
+				end
+			end
+			UpdatePlayerInfo(PersonInfoFrame.PlrName.Text, v945)
+			u19:disconnect()
+			u20:disconnect()
+		end)
+		u20 = script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.MenuBar.Close.MouseButton1Click:Connect(function()
+			script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Visible = false
+			script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.CallDescFrame.TextBox.Text = ""
+			u19:disconnect()
+			u20:disconnect()
+		end)
+	end
+end)
+print("DEBUG: SUSPEND DRIVERS LICENE")
+
+PersonInfoFrame.SuspendCCW.MouseButton1Click:Connect(function()
+	local v948, v949 = Events.PoliceEvents.CheckRank:InvokeServer("SupCheck")
+	if Supervisor == true and v948 == true then
+		Audios.Click:Play()
+		if PersonInfoFrame.CCWStatus.Text == "NONE" or PersonInfoFrame.CCWStatus.Text == "REVOKED" or PersonInfoFrame.CCWStatus.Text == "SUSPENDED" then
+			return
+		end
+		script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Visible = true
+		script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Title.Text = "SUSPEND FIREARMS LICENSE"
+		local u21 = nil
+		local u22 = nil
+		u21 = script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Submit.MouseButton1Click:Connect(function()
+			LicenseEvent:FireServer("SuspendCCW", PersonInfoFrame.PlrName.Text, script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.CallDescFrame.TextBox.Text, LocalPlayer.Name)
+			script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.CallDescFrame.TextBox.Text = ""
+			script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Visible = false
+			wait(0.05)
+			local v950 = nil
+			for v951, v952 in pairs(game.ReplicatedStorage.Players:GetChildren()) do
+				if v952:IsA("Folder") and v952.FullName.Value:lower() == PersonInfoFrame.PlrName.Text:lower() then
+					v950 = game.Players:FindFirstChild(v952.Name)
+					break
+				end
+			end
+			UpdatePlayerInfo(PersonInfoFrame.PlrName.Text, v950)
+			u21:disconnect()
+			u22:disconnect()
+		end)
+		u22 = script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.MenuBar.Close.MouseButton1Click:Connect(function()
+			script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Visible = false
+			script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.CallDescFrame.TextBox.Text = ""
+			u21:disconnect()
+			u22:disconnect()
+		end)
+	end
+end)
+print("DEBUG: SUSPEND FIREARMS LICENSE")
+
+PersonInfoFrame.RevokeCCW.MouseButton1Click:Connect(function()
+	local v953, v954 = Events.PoliceEvents.CheckRank:InvokeServer("SupCheck")
+	if Supervisor == true and v953 == true then
+		Audios.Click:Play()
+		if PersonInfoFrame.CCWStatus.Text == "NONE" or PersonInfoFrame.CCWStatus.Text == "REVOKED" then
+			return
+		end
+		script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.Title.Text = "SUSPEND FIREARMS LICENSE"
+		local u23 = nil
+		local u24 = nil
+		u24 = script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.MenuBar.Close.MouseButton1Click:Connect(function()
+			script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.Visible = false
+			script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.CallDescFrame.TextBox.Text = ""
+			u23:disconnect()
+			u24:disconnect()
+		end)
+		u23 = script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.Submit.MouseButton1Click:Connect(function()
+			LicenseEvent:FireServer("RevokeCCW", PersonInfoFrame.PlrName.Text, script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.CallDescFrame.TextBox.Text, LocalPlayer.Name)
+			script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.CallDescFrame.TextBox.Text = ""
+			script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.Visible = false
+			local v955 = nil
+			for v956, v957 in pairs(game.ReplicatedStorage.Players:GetChildren()) do
+				if v957:IsA("Folder") and v957.FullName.Value:lower() == PlayerName.Text:lower() then
+					v955 = game.Players:FindFirstChild(v957.Name)
+					break
+				end
+			end
+			UpdatePlayerInfo(PersonInfoFrame.PlrName.Text, v955)
+			u23:disconnect()
+			u24:disconnect()
+		end)
+		script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.Visible = true
+	end
+end)
+print("DEBUG: REVOKE FIREARM LICENSE")
+
+PersonInfoFrame.SuspendHunting.MouseButton1Click:Connect(function()
+	local v958, v959 = Events.PoliceEvents.CheckRank:InvokeServer("SupCheck")
+	if Supervisor == true and v958 == true then
+		Audios.Click:Play()
+		if PersonInfoFrame.HuntingStatus.Text == "NONE" or PersonInfoFrame.HuntingStatus.Text == "REVOKED" or PersonInfoFrame.HuntingStatus.Text == "SUSPENDED" then
+			return
+		end
+		script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Title.Text = "Are you sure you want to suspend their hunting license?"
+		local u25 = nil
+		local u26 = nil
+		u25 = script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Continue.MouseButton1Click:Connect(function()
+			LicenseEvent:FireServer("SuspendHunting", PersonInfoFrame.PlrName.Text)
+			wait(0.05)
+			local v960 = nil
+			for v961, v962 in pairs(game.ReplicatedStorage.Players:GetChildren()) do
+				if v962:IsA("Folder") and v962.FullName.Value:lower() == PlayerName.Text:lower() then
+					v960 = game.Players:FindFirstChild(v962.Name)
+					break
+				end
+			end
+			UpdatePlayerInfo(PersonInfoFrame.PlrName.Text, v960)
+			script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Visible = false
+			u25:disconnect()
+			u26:disconnect()
+		end)
+		u26 = script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Cancel.MouseButton1Click:Connect(function()
+			script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Visible = false
+			u25:disconnect()
+			u26:disconnect()
+		end)
+		script.Parent.Frame.DesktopFrame.Additonial.SuspendLicenseFrame.Visible = true
+	end
+end)
+print("DEBUG: SUSPEND HUNTING LICENSE")
+
+PersonInfoFrame.RevokeHunting.MouseButton1Click:Connect(function()
+	local v963, v964 = Events.PoliceEvents.CheckRank:InvokeServer("SupCheck")
+	if Supervisor == true and v963 == true then
+		Audios.Click:Play()
+		if PersonInfoFrame.HuntingStatus.Text == "NONE" or PersonInfoFrame.HuntingStatus.Text == "REVOKED" then
+			return
+		end
+		script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.Title.Text = "SUSPEND HUNTING LICENSE"
+		local u27 = nil
+		local u28 = nil
+		u28 = script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.MenuBar.Close.MouseButton1Click:Connect(function()
+			script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.Visible = false
+			script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.CallDescFrame.TextBox.Text = ""
+			u27:disconnect()
+			u28:disconnect()
+		end)
+		u27 = script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.Submit.MouseButton1Click:Connect(function()
+			LicenseEvent:FireServer("RevokeHunting", PersonInfoFrame.PlrName.Text, script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.CallDescFrame.TextBox.Text, LocalPlayer.Name)
+			script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.CallDescFrame.TextBox.Text = ""
+			script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.Visible = false
+			local v965 = nil
+			for v966, v967 in pairs(game.ReplicatedStorage.Players:GetChildren()) do
+				if v967:IsA("Folder") and v967.FullName.Value:lower() == PlayerName.Text:lower() then
+					v965 = game.Players:FindFirstChild(v967.Name)
+					break
+				end
+			end
+			UpdatePlayerInfo(PersonInfoFrame.PlrName.Text, v965)
+			u27:disconnect()
+			u28:disconnect()
+		end)
+		script.Parent.Frame.DesktopFrame.Additonial.RevokeLicenseFrame.Visible = true
+	end
+end)
+print("DEBUG: REVOKE HUNTING LICENE")
+
+
+local l__Template__29 = ActiveCalls.Template
+local u30 = false
+local u31 = false
+
+function UpdateCals()
+	local v968, v969, ui0 = pairs(ActiveCalls:GetChildren())
+	while true do
+		local ui1, ui2 = v968(v969, ui0)
+		if ui1 then
+
+		else
+			break
+		end
+		ui0 = ui1
+		if ui2.Name ~= "Template" then
+			if ui2.Name ~= "UIListLayout" then
+				ui2:Destroy()
+			end
+		end	
+	end
+	local ui3 = false
+	local ui4 = GetInfo:InvokeServer("Calls")
+	if ui4 then
+		local ui5, ui6, ui7 = pairs(ui4)
+		while true do
+			local ui8, ui9 = ui5(ui6, ui7)
+			if ui8 then
+
+			else
+				break
+			end
+			ui7 = ui8
+			local v980 = ActiveCalls:FindFirstChild(ui9.ID)
+			if not v980 then
+				if _G.ActiveCall then
+					if _G.ActiveCall == ui9.ID then
+						ui3 = true
+					end
+				end
+				if not ui3 then
+					_G.ActiveCall = nil
+					ui3 = false
+				end
+				local v981 = l__Template__29:Clone()
+				v981.Name = ui9.ID
+				v981.AttachCall.BackgroundColor3 = Color3.fromRGB(0, 129, 0)
+				if #ui9.Units == 0 then
+					v981.AttachCall.Text = "CLAIM CALL"
+					v981.AttachCall.BackgroundColor3 = Color3.fromRGB(10, 129, 0)
+				elseif 25 <= #ui9.Units then
+					v981.AttachCall.Text = "CALL FULL"
+					v981.AttachCall.BackgroundColor3 = Color3.fromRGB(129, 23, 25)
+				else
+					v981.AttachCall.Text = "ATTACH CALL"
+					v981.AttachCall.BackgroundColor3 = Color3.fromRGB(10, 129, 0)
+				end
+				if ui9.Primary == LocalPlayer.Name then
+					v981.ClearCall.Visible = true
+					v981.AttachCall.BackgroundColor3 = Color3.fromRGB(129, 23, 25)
+					v981.AttachCall.Text = "DEATTACH CALL"
+				elseif Supervisor then
+					v981.ClearCall.Visible = true
+				else
+					v981.ClearCall.Visible = false
+				end
+				local v982, v983, v984 = pairs(ui9.Units)
+				while true do
+					local v985, v986 = v982(v983, v984)
+					if v985 then
+
+					else
+						break
+					end
+					v984 = v985
+					if v986 == LocalPlayer.Name then
+						SetupCurrentCall(ui9.CallType, ui9.Player, ui9.CallNumber, ui9.Units, ui9.CallDesc, ui9.Primary, ui9.Location, ui9.ID)
+						_G.ActiveCall = ui9.ID
+						v981.AttachCall.BackgroundColor3 = Color3.fromRGB(129, 23, 25)
+						v981.AttachCall.Text = "DEATTACH CALL"
+						break
+					end				
+				end
+				v981.CallType.Text = "CALL TYPE: " .. string.upper(ui9.CallType)
+				v981.Callby.Text = "CALL BY: " .. ui9.Player
+				v981.CallNumber.Value = ui9.ID
+				v981.AttachedUnits.Text = "ATTACHTED UNITS: " .. tostring(#ui9.Units) .. "/25"
+				v981.CallDesc.Text = "CALL DESC: " .. ui9.CallDesc
+				v981.CallNum.Text = "CALL #: " .. ui9.CallNumber
+				v981.Primary.Text = "PRIMARY: " .. ui9.Primary
+				v981.CallLoc.Text = "CALL LOCATION: " .. ui9.Location
+				v981.Modified.Text = "LAST MODIFIED: " .. ui9.Modified
+				if ui9.CallType == "PANIC BUTTON" then
+					if u30 == false then
+						if os.time() - ui9.CreatedOn < 10 then
+							Audios.Panic:Play()
+						end
+					end
+					Audios.NewCall.Volume = 0
+					v981.BackgroundColor3 = Color3.fromRGB(29, 0, 0)
+				else
+					Audios.NewCall.Volume = 1
+					v981.BackgroundColor3 = Color3.fromRGB(2, 21, 42)
+				end
+				v981.Visible = true
+				v981.Parent = ActiveCalls
+				v981.AttachCall.MouseButton1Click:Connect(function()
+					if u31 == false then
+						u31 = true
+						if v981.AttachCall.Text == "CALL FULL" then
+							u31 = false
+							return
+						end
+						if v981.AttachCall.Text == "CLAIM CALL" then
+							if GetInfo:InvokeServer("isTenEight", LocalPlayer.Name) then
+								ModifyCallEvent:FireServer(v981.Name, "Attach")
+								_G.ActiveCall = v981.Name
+								game.ReplicatedStorage.Markers.Pos.Position = ui9.PlayerLoc + Vector3.new(0, 7, 0)
+								game.ReplicatedStorage.Marker:Clone().Parent = LocalPlayer.PlayerGui
+							else
+								game.ReplicatedStorage.Remotes.NewNotification:Fire({
+									Title = "ERROR", 
+									Desc = "You are not 10-8 please change your status to 10-8 in order to continue", 
+									Type = "Warning", 
+									Font = Enum.Font.SourceSans, 
+									Color = nil, 
+									Timer = 5, 
+									Function = nil, 
+									CustomName = nil
+								})
+							end
+						elseif v981.AttachCall.Text == "ATTACH CALL" then
+							if GetInfo:InvokeServer("isTenEight", LocalPlayer.Name) then
+								ModifyCallEvent:FireServer(v981.Name, "Attach")
+								_G.ActiveCall = v981.Name
+							else
+								game.ReplicatedStorage.Remotes.NewNotification:Fire({
+									Title = "ERROR", 
+									Desc = "You are not 10-8 please change your status to 10-8 in order to continue", 
+									Type = "Warning", 
+									Font = Enum.Font.SourceSans, 
+									Color = nil, 
+									Timer = 5, 
+									Function = nil, 
+									CustomName = nil
+								})
+							end
+							game.ReplicatedStorage.Markers.Pos.Position = ui9.PlayerLoc + Vector3.new(0, 7, 0)
+							game.ReplicatedStorage.Marker:Clone().Parent = LocalPlayer.PlayerGui
+						elseif v981.AttachCall.Text == "DEATTACH CALL" then
+							if _G.ActiveCall then
+								local l__Marker__987 = LocalPlayer.PlayerGui:FindFirstChild("Marker")
+								if l__Marker__987 then
+									l__Marker__987:Destroy()
+								end
+								Audios.DeattachCall:Play()
+								ModifyCallEvent:FireServer(v981.Name, "Deattach")
+								ClearActiveCall()
+								_G.ActiveCall = nil
+							end
+						end
+						wait(1)
+						u31 = false
+					end
+				end)
+				if u30 == false then
+					Audios.NewCall:Play()
+				end
+				v981.ClearCall.MouseButton1Click:Connect(function()
+					ModifyCallEvent:FireServer(v981.Name, "Clear")
+					_G.ActiveCall = nil
+				end)
+			else
+				v980.ClearCall.MouseButton1Click:Connect(function()
+					ModifyCallEvent:FireServer(v980.Name, "Clear")
+					_G.ActiveCall = nil
+				end)
+				v980.AttachCall.MouseButton1Click:Connect(function()
+					if u31 == false then
+						u31 = true
+						if v980.AttachCall.Text == "CALL FULL" then
+							u31 = false
+							return
+						end
+						if v980.AttachCall.Text == "CLAIM CALL" then
+							if GetInfo:InvokeServer("isTenEight", LocalPlayer.Name) then
+								ModifyCallEvent:FireServer(v980.Name, "Attach")
+								_G.ActiveCall = v980.Name
+							else
+								game.ReplicatedStorage.Remotes.NewNotification:Fire({
+									Title = "ERROR", 
+									Desc = "You are not 10-8 please change your status to 10-8 in order to continue", 
+									Type = "Warning", 
+									Font = Enum.Font.SourceSans, 
+									Color = nil, 
+									Timer = 5, 
+									Function = nil, 
+									CustomName = nil
+								})
+							end
+						elseif v980.AttachCall.Text == "ATTACH CALL" then
+							if GetInfo:InvokeServer("isTenEight", LocalPlayer.Name) then
+								ModifyCallEvent:FireServer(v980.Name, "Attach")
+								_G.ActiveCall = v980.Name
+							else
+								game.ReplicatedStorage.Remotes.NewNotification:Fire({
+									Title = "ERROR", 
+									Desc = "You are not 10-8 please change your status to 10-8 in order to continue", 
+									Type = "Warning", 
+									Font = Enum.Font.SourceSans, 
+									Color = nil, 
+									Timer = 5, 
+									Function = nil, 
+									CustomName = nil
+								})
+							end
+						elseif v980.AttachCall.Text == "DEATTACH CALL" then
+							if _G.ActiveCall then
+								local l__Marker__988 = LocalPlayer.PlayerGui:FindFirstChild("Marker")
+								if l__Marker__988 then
+									l__Marker__988:Destroy()
+								end
+								Audios.DeattachCall:Play()
+								ModifyCallEvent:FireServer(v980.Name, "Deattach")
+								ClearActiveCall()
+								_G.ActiveCall = nil
+							end
+						end
+						wait(1)
+						u31 = false
+					end
+				end)
+			end		
+		end
+	end
+end
+print("DEBUG: CALL UPDATE FUNC")
+
+function UpdateBolos()
+	local v989 = GetInfo:InvokeServer("Bolos")
+	if v989 then
+		local v990, v991, v992 = pairs(v989)
+		while true do
+			local v993, v994 = v990(v991, v992)
+			if v993 then
+
+			else
+				break
+			end
+			v992 = v993
+			local v995 = BoloFrame.ActiveBolos:FindFirstChild(v994[7])
+			if not v995 then
+				script.Parent.Audios.NewBolo:Play()
+				local v996 = BoloFrame.ActiveBolos.Template:Clone()
+				v996.Name = v994[7]
+				v996.CreatedBy.Text = "CREATED BY: " .. v994[1]
+				v996.BoloType.Text = "BOLO TYPE: " .. v994[2]
+				v996.LastSeen.Text = "LAST SEEN: " .. v994[3]
+				v996.WantedFor.Text = "WANTED FOR: " .. v994[4]
+				v996.ShortDesc.Text = "SHORT DESC: " .. v994[5]
+				v996.CreatedOn.Text = "CREATED ON: " .. v994[6]
+				v996.Visible = true
+				v996.Parent = BoloFrame.ActiveBolos
+				v996.Close.MouseButton1Click:Connect(function()
+					BoloEvent:FireServer("Remove", v996.Name)
+				end)
+			else
+				v995.Close.MouseButton1Click:Connect(function()
+					BoloEvent:FireServer("Remove", v995.Name)
+				end)
+			end		
+		end
+	end
+end
+print("DEBUG: BOLO UPDATE FUNC")
+
+BoloFrame.ActiveBolos.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function(p15)
+	BoloFrame.ActiveBolos.CanvasSize = UDim2.new(0, 0, 0, BoloFrame.ActiveBolos.UIListLayout.AbsoluteContentSize.Y)
+end)
+PersonInfoFrame.TicketFrame.ScrollingFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function(p16)
+	PersonInfoFrame.TicketFrame.ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, PersonInfoFrame.TicketFrame.ScrollingFrame.UIListLayout.AbsoluteContentSize.Y)
+end)
+PersonInfoFrame.OwnedVehicles.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function(p17)
+	PersonInfoFrame.OwnedVehicles.CanvasSize = UDim2.new(0, 0, 0, PersonInfoFrame.OwnedVehicles.UIListLayout.AbsoluteContentSize.Y)
+end)
+PersonInfoFrame.ArrestFrame.ScrollingFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function(p18)
+	PersonInfoFrame.ArrestFrame.ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, PersonInfoFrame.ArrestFrame.ScrollingFrame.UIListLayout.AbsoluteContentSize.Y)
+end)
+print("DEBUG: Info Frame stuff")
+
+function ClearActiveCall()
+	CurrentCallFrame.CurrentCall.Visible = false
+end
+
+local l__AttachCall__32 = Audios.AttachCall
+
+function SetupCurrentCall(p19, p20, p21, p22, p23, p24, p25, p26)
+	l__AttachCall__32:Play()
+	CurrentCallFrame.CurrentCall.Visible = true
+	CurrentCallFrame.CurrentCall.AttachedUnits.Text = "ATTACHTED UNITS: " .. tostring(#p22) .. "/25"
+	CurrentCallFrame.CurrentCall.CallDesc.Text = "CALL DESC: " .. p23
+	CurrentCallFrame.CurrentCall.CallLocation.Text = "CALL LOCATION: " .. p25
+	CurrentCallFrame.CurrentCall.CallNum.Text = "CALL #: " .. tostring(p21)
+	CurrentCallFrame.CurrentCall.CallType.Text = string.upper(p19)
+	CurrentCallFrame.CurrentCall.Callby.Text = "CALL BY: " .. p20
+	CurrentCallFrame.CurrentCall.Primary.Text = "PRIMARY: " .. p24
+	CurrentCallFrame.CurrentCall.CallNumber.Value = p26
+end
+print("DEBUG: SetupCurrentCall")
+
+CurrentCallFrame.NewCallButton.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	DesktopFrame.Additonial.SelfCallFrame.Visible = true
+end)
+
+CurrentCallFrame.NewCallButton.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	DesktopFrame.Additonial.SelfCallFrame.Visible = true
+end)
+
+DesktopFrame.MainFrame.BoloFrame.Frame.BoloButton.MouseButton1Click:Connect(function()
+	DesktopFrame.Additonial.NewBoloFrame.Visible = true
+end)
+
+DesktopFrame.Additonial.NewBoloFrame.MenuBar.Close.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	for v997, v998 in pairs(DesktopFrame.Additonial.NewBoloFrame:GetDescendants()) do
+		if v998:IsA("TextBox") then
+			v998.Text = ""
+		end
+	end
+	DesktopFrame.Additonial.NewBoloFrame.Visible = false
+end)
+
+
+DesktopFrame.Additonial.SelfCallFrame.MenuBar.Close.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	for v999, v1000 in pairs(DesktopFrame.Additonial.SelfCallFrame:GetDescendants()) do
+		if v1000:IsA("TextBox") then
+			v1000.Text = ""
+		end
+	end
+	DesktopFrame.Additonial.SelfCallFrame.Visible = false
+end)
+print("DEBUG: SELF CALL 1320")
+
+DesktopFrame.Additonial.NewBoloFrame.Submit.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	local debounce = true
+	for i, input in pairs(DesktopFrame.Additonial.NewBoloFrame:GetDescendants()) do
+		if input:IsA("TextBox") and input.Text:gsub(" ", "") == "" then
+			debounce = false
+		end
+	end
+	if debounce == true then
+		BoloEvent:FireServer("CreateNew", DesktopFrame.Additonial.NewBoloFrame.BoloTypeFrame.TextBox.Text, DesktopFrame.Additonial.NewBoloFrame.LastSeenFrame.TextBox.Text, DesktopFrame.Additonial.NewBoloFrame.WantedForFrame.TextBox.Text, DesktopFrame.Additonial.NewBoloFrame.ShortDescFrame.TextBox.Text, fullname)
+		for i, inputs in pairs(DesktopFrame.Additonial.NewBoloFrame:GetDescendants()) do
+			if inputs:IsA("TextBox") then
+				inputs.Text = ""
+			end
+		end
+		DesktopFrame.Additonial.NewBoloFrame.Visible = false
+	end
+end)
+print("DEBUG: BOLO SUBMIT")
+
+DesktopFrame.Additonial.SelfCallFrame.Submit.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	local v1006 = true
+	for v1007, v1008 in pairs(DesktopFrame.Additonial.SelfCallFrame:GetDescendants()) do
+		if v1008:IsA("TextBox") and v1008.Text:gsub(" ", "") == "" then
+			v1006 = false
+		end
+	end
+	if v1006 == true then
+		game.ReplicatedStorage.Events.InformationEvents.NewCallEvent:FireServer(DesktopFrame.Additonial.SelfCallFrame.CallTypeFrame.TextBox.Text, "Police", DesktopFrame.Additonial.SelfCallFrame.CallLocationFrame.TextBox.Text, DesktopFrame.Additonial.SelfCallFrame.CallDescFrame.TextBox.Text, "Claim")
+		print("DEBUG: CALL CREATION:" ..  DesktopFrame.Additonial.SelfCallFrame.CallTypeFrame.TextBox.Text, "Police", DesktopFrame.Additonial.SelfCallFrame.CallLocationFrame.TextBox.Text, DesktopFrame.Additonial.SelfCallFrame.CallDescFrame.TextBox.Text, "Claim")
+		for v1009, offenses0 in pairs(DesktopFrame.Additonial.SelfCallFrame:GetDescendants()) do
+			if offenses0:IsA("TextBox") then
+				offenses0.Text = ""
+			end
+		end
+		DesktopFrame.Additonial.SelfCallFrame.Visible = false
+	end
+end)
+print("DEBUG: SELF CALL")
+
+CurrentCallFrame.CurrentCall.ClearFromCall.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	ClearActiveCall()
+	ModifyCallEvent:FireServer(CurrentCallFrame.CurrentCall.CallNumber.Value, "Deattach")
+	Audios.DeattachCall:Play()
+	_G.ActiveCall = nil
+	local l__Marker__1011 = LocalPlayer.PlayerGui:FindFirstChild("Marker")
+	if l__Marker__1011 then
+		l__Marker__1011:Destroy()
+	end
+end)
+print("DEBUG: CLEAR CURRENT CALL")
+
+DesktopFrame.Additonial.Codes.CloseFrame.close.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	DesktopFrame.Additonial.Codes.Visible = false
+end)
+Reports.ReportsFrame.Frame.ButtonList.TenCodes.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	if DesktopFrame.Additonial.Codes.Visible == false then
+		DesktopFrame.Additonial.Codes.Visible = true
+		return
+	end
+	DesktopFrame.Additonial.Codes.Visible = false
+end)
+print("DEBUG: CODES")
+
+ActiveCalls.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function(p27)
+	ActiveCalls.CanvasSize = UDim2.new(0, 0, 0, ActiveCalls.UIListLayout.AbsoluteContentSize.Y)
+end)
+
+local u33 = nil
+NewCallEvent.OnClientEvent:Connect(function(p28)
+	u33 = p28
+	UpdateCals()
+end)
+print("DEBUG: NEW CALL")
+
+
+ModifyCallEvent.OnClientEvent:Connect(function(p29, p30)
+	local offenses2 = ActiveCalls:FindFirstChild(p29.ID)
+	if offenses2 then
+		if p30 == "Clear" then
+			offenses2:Destroy()
+			return
+		end
+		if #p29.Units == 0 then
+			offenses2.AttachCall.Text = "CLAIM CALL"
+			offenses2.AttachCall.BackgroundColor3 = Color3.fromRGB(10, 129, 0)
+		elseif #p29.Units >= 25 then
+			offenses2.AttachCall.Text = "CALL FULL"
+			offenses2.AttachCall.BackgroundColor3 = Color3.fromRGB(129, 23, 25)
+		else
+			offenses2.AttachCall.Text = "ATTACH CALL"
+			offenses2.AttachCall.BackgroundColor3 = Color3.fromRGB(10, 129, 0)
+		end
+		for offenses3, offenses4 in pairs(p29.Units) do
+			if offenses4 == LocalPlayer.Name then
+				SetupCurrentCall(p29.CallType, p29.Player, p29.CallNumber, p29.Units, p29.CallDesc, p29.Primary, p29.Location, p29.ID)
+				_G.ActiveCall = p29.ID
+				offenses2.AttachCall.BackgroundColor3 = Color3.fromRGB(129, 23, 25)
+				offenses2.AttachCall.Text = "DEATTACH CALL"
+				break
+			end
+		end
+	end
+	if p29.Primary == LocalPlayer.Name then
+		offenses2.ClearCall.Visible = true
+		offenses2.AttachCall.BackgroundColor3 = Color3.fromRGB(129, 23, 25)
+		offenses2.AttachCall.Text = "DEATTACH CALL"
+	elseif Supervisor then
+		offenses2.ClearCall.Visible = true
+	else
+		offenses2.ClearCall.Visible = false
+	end
+	offenses2.CallType.Text = "CALL TYPE: " .. string.upper(p29.CallType)
+	offenses2.Callby.Text = "CALL BY: " .. p29.Player
+	offenses2.CallNumber.Value = tostring(p29.CallNumber)
+	offenses2.AttachedUnits.Text = "ATTACHTED UNITS: " .. tostring(#p29.Units) .. "/25"
+	offenses2.CallDesc.Text = "CALL DESC: " .. p29.CallDesc
+	offenses2.CallNum.Text = "CALL #: " .. p29.CallNumber
+	offenses2.Primary.Text = "PRIMARY: " .. p29.Primary
+	offenses2.CallLoc.Text = "CALL LOCATION: " .. p29.Location
+	offenses2.Modified.Text = "LAST MODIFIED: " .. p29.Modified
+end)
+print("DEBUG: MODIFY")
+
+ClearedCallEvent.OnClientEvent:Connect(function(p31)
+	if p31 == true then
+		return
+	end
+	ClearActiveCall()
+	local l__Marker__1015 = LocalPlayer.PlayerGui:FindFirstChild("Marker")
+	if l__Marker__1015 then
+		l__Marker__1015:Destroy()
+	end
+	_G.ActiveCall = nil
+end)
+print("DEBUG: CLEARED CALL")
+
+
+PersonInfoFrame.ArrestFrame.ScrollingFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function(p32)
+	PersonInfoFrame.ArrestFrame.ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, PersonInfoFrame.ArrestFrame.ScrollingFrame.UIListLayout.AbsoluteContentSize.Y)
+end)
+VehInfoFrame.CitationFrame.CitationFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function(p33)
+	VehInfoFrame.CitationFrame.CitationFrame.CanvasSize = UDim2.new(0, 0, 0, VehInfoFrame.CitationFrame.CitationFrame.UIListLayout.AbsoluteContentSize.Y)
+end)
+
+function ClearViewport()
+	VehInfoFrame.ViewportFrame.Viewport:ClearAllChildren()
+end
+function ClearWeapon()
+	WeaponLookup.InfoFrame.ViewportFrame.Viewport:ClearAllChildren()
+end
+
+local function u34()
+	for offenses6, offenses7 in pairs(VehInfoFrame.CitationFrame.CitationFrame:GetChildren()) do
+		if offenses7.Name ~= "Template" and offenses7.Name ~= "UIListLayout" then
+			offenses7:Destroy()
+		end
+	end
+	ClearViewport()
+end
+print("DEBUG: 1464")
+
+function VehicleInfo(p34)
+	u34()
+	local offenses8 = nil
+	local offenses9, v1020, v1021 = pairs((GetInfo:InvokeServer("Cars")))
+	while true do
+		local v1022, v1023 = offenses9(v1020, v1021)
+		if v1022 then
+
+		else
+			break
+		end
+		local v1024, v1025, v1026 = pairs(v1023)
+		while true do
+			local v1027, v1028 = v1024(v1025, v1026)
+			if v1027 then
+
+			else
+				break
+			end
+			v1026 = v1027
+			if v1028.Plate:lower() == p34:lower() then
+				offenses8 = v1028
+				break
+			end		
+		end	
+	end
+	if offenses8 then
+		local v1029 = game.Players:GetPlayerByUserId(offenses8.OwnedBy)
+		if v1029 then
+			VehInfoFrame.CarModel.Text = offenses8.Model
+			local v1030 = game.ReplicatedStorage.Vehicles:FindFirstChild(offenses8.Model)
+			if v1030 then
+				local v1031 = v1030:Clone()
+				local v1032 = viewportmodule.new(l__Viewport__58, v57)
+				local v1033, v1034 = v1031:GetBoundingBox()
+				local v1035 = math.max(v1034.X, v1034.Y, v1034.Z)
+				local v1036 = v1035 / math.tan(math.rad(v57.FieldOfView)) * 0.2
+				v1031:SetPrimaryPartCFrame(CFrame.new(Vector3.new(0, 0, 0)))
+				v1031.Parent = l__Viewport__58
+				v57.CFrame = CFrame.Angles(0, 1.5707963267948966, 0) * CFrame.new(v59 + Vector3.new(0, 0, v1035 / 2 + v1036), v59)
+				v1032:SetModel(v1031)
+			end
+			VehInfoFrame.CarPlate.Text = offenses8.Plate
+			VehInfoFrame.PlrName.Text = game.ReplicatedStorage.Players:FindFirstChild(v1029.Name).FullName.Value
+			local v1037 = Instance.new("Part")
+			v1037.Anchored = true
+			v1037.CanCollide = false
+			v1037.CanQuery = false
+			v1037.CanTouch = false
+			v1037.Parent = workspace.Terrain
+			v1037.Color = Color3.new(offenses8.Color.R, offenses8.Color.G, offenses8.Color.B)
+			game.Debris:AddItem(v1037, 1)
+			wait()
+			VehInfoFrame.CarColor.Text = string.upper(tostring(v1037.BrickColor))
+			v1037:Destroy()
+			if offenses8.Insurance ~= "EXPIRED" then
+				if offenses8.Insurance == "NONE" then
+					VehInfoFrame.InsuranceStatus.TextColor3 = Color3.fromRGB(185, 10, 13)
+				else
+					VehInfoFrame.InsuranceStatus.TextColor3 = Color3.fromRGB(0, 143, 105)
+				end
+			else
+				VehInfoFrame.InsuranceStatus.TextColor3 = Color3.fromRGB(185, 10, 13)
+			end
+			if offenses8.Stolen == "STOLEN" then
+				VehInfoFrame.ClearStolen.Text = "CLEAR STOLEN"
+				VehInfoFrame.StolenStatus.TextColor3 = Color3.fromRGB(185, 10, 13)
+			else
+				VehInfoFrame.ClearStolen.Text = "MARK STOLEN"
+				VehInfoFrame.StolenStatus.TextColor3 = Color3.fromRGB(0, 143, 105)
+			end
+			if offenses8.Registration ~= "EXPIRED" then
+				if offenses8[6] == "NONE" then
+					VehInfoFrame.RegStatus.TextColor3 = Color3.fromRGB(185, 10, 13)
+				else
+					VehInfoFrame.RegStatus.TextColor3 = Color3.fromRGB(0, 143, 105)
+				end
+			else
+				VehInfoFrame.RegStatus.TextColor3 = Color3.fromRGB(185, 10, 13)
+			end
+			VehInfoFrame.RegStatus.Text = offenses8.Registration
+			VehInfoFrame.InsuranceStatus.Text = offenses8.Insurance
+			VehInfoFrame.StolenStatus.Text = tostring(offenses8.Stolen)
+			local v1038 = {}
+			local v1039, v1040, v1041 = pairs(UserInfoFunction:InvokeServer(v1029.Name).CriminalStats.Warrants)
+			while true do
+				local v1042, v1043 = v1039(v1040, v1041)
+				if v1042 then
+
+				else
+					break
+				end
+				v1041 = v1042
+				table.insert(v1038, v1043)			
+			end
+			if 0 < #v1038 then
+				Audios.ActiveStatus:Play()
+				VehInfoFrame.WarrantStatus.TextColor3 = Color3.fromRGB(185, 10, 13)
+				VehInfoFrame.WarrantStatus.Text = "ACTIVE WARRANT"
+			else
+				VehInfoFrame.WarrantStatus.TextColor3 = Color3.fromRGB(208, 208, 208)
+				VehInfoFrame.WarrantStatus.Text = "N/A"
+			end
+			local v1044, v1045, v1046 = pairs((GetInfo:InvokeServer("Tickets", v1029.Name)))
+			while true do
+				local v1047, v1048 = v1044(v1045, v1046)
+				if v1047 then
+
+				else
+					break
+				end
+				v1046 = v1047
+				if v1048.Plate:lower() == offenses8.Plate:lower() then
+					local v1049 = VehInfoFrame.CitationFrame.CitationFrame.Template:Clone()
+					v1049.Name = v1048.TicketNum
+					v1049.CaseNum.Text = tostring(v1048.TicketNum)
+					v1049.Charges.Text = table.concat(v1048.Charges, " | ")
+					v1049.Visible = true
+					v1049.Parent = VehInfoFrame.CitationFrame.CitationFrame
+				end			
+			end
+		end
+	end
+end
+local l__VehSearch__35 = VehSearchFrame.VehSearch
+VehInfoFrame.Close.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	l__VehSearch__35.Text = ""
+	VehInfoFrame.Visible = false
+	VehSearchFrame.Visible = true
+	ClearViewport()
+end)
+VehInfoFrame.ClearStolen.MouseButton1Click:Connect(function()
+	Audios.Click:Play()
+	if VehInfoFrame.ClearStolen.Text == "CLEAR STOLEN" then
+		LicenseEvent:FireServer("ClearStolen", VehInfoFrame.PlrName.Text, VehInfoFrame.CarPlate.Text)
+		VehicleInfo(VehInfoFrame.CarPlate.Text)
+		return
+	end
+	if VehInfoFrame.ClearStolen.Text == "MARK STOLEN" then
+		script.Parent.Frame.DesktopFrame.Additonial.Areyousure.Title.Text = "Are you sure you want to mark this car as stolen?"
+		local u36 = nil
+		local u37 = nil
+		u36 = script.Parent.Frame.DesktopFrame.Additonial.Areyousure.Continue.MouseButton1Click:Connect(function()
+			LicenseEvent:FireServer("MarkStolen", VehInfoFrame.PlrName.Text, VehInfoFrame.CarPlate.Text)
+			VehicleInfo(VehInfoFrame.CarPlate.Text)
+			script.Parent.Frame.DesktopFrame.Additonial.Areyousure.Visible = false
+			u36:disconnect()
+			u37:disconnect()
+		end)
+		u37 = script.Parent.Frame.DesktopFrame.Additonial.Areyousure.Cancel.MouseButton1Click:Connect(function()
+			script.Parent.Frame.DesktopFrame.Additonial.Areyousure.Visible = false
+			u36:disconnect()
+			u37:disconnect()
+		end)
+		script.Parent.Frame.DesktopFrame.Additonial.Areyousure.Visible = true
+	end
+end)
+l__VehSearch__35.FocusLost:Connect(function(p35)
+	local v1050 = false
+	local v1051 = nil
+	if p35 == false then
+		return
+	end
+	local v1052 = GetInfo:InvokeServer("Cars")
+	if not v1052 then
+		Audios.Error:Play()
+		l__VehSearch__35.Text = ""
+		return
+	end
+	local v1053, v1054, v1055 = pairs(v1052)
+	while true do
+		local v1056, v1057 = v1053(v1054, v1055)
+		if not v1056 then
+			break
+		end
+		for v1058, v1059 in pairs(v1057) do
+			if v1059.Plate:lower() == l__VehSearch__35.Text:lower() then
+				v1050 = true
+				v1051 = v1059.Plate
+				break
+			end
+		end	
+	end
+	if v1050 ~= true then
+		Audios.Error:Play()
+		l__VehSearch__35.Text = ""
+		return
+	end
+	mouse.Icon = "http://www.roblox.com/asset?id=5018953955"
+	VehicleInfo(v1051)
+	wait(1)
+	mouse.Icon = "http://www.roblox.com/asset?id=5018892087"
+	VehInfoFrame.Visible = true
+	VehSearchFrame.Visible = false
+	l__VehSearch__35.Text = ""
+end)
+print("DEBUG: VEHICLE INFO")
+
+function WeaponInfo(p36)
+	ClearWeapon()
+	WeaponLookup.InfoFrame.OwnedBy.Text = GetInfo:InvokeServer("Player", p36.OwnedBy)
+	WeaponLookup.InfoFrame.WeaponSN.Text = p36.SerialNum
+	WeaponLookup.InfoFrame.WeaponModel.Text = string.upper(p36.Model)
+	WeaponLookup.InfoFrame.RegStatus.Text = string.upper("VALID")
+	if p36.Stolen then
+		WeaponLookup.InfoFrame.StolenStatus.Text = "STOLEN"
+		WeaponLookup.InfoFrame.StolenStatus.TextColor3 = Color3.fromRGB(185, 10, 13)
+	else
+		WeaponLookup.InfoFrame.StolenStatus.TextColor3 = Color3.fromRGB(0, 143, 105)
+		WeaponLookup.InfoFrame.StolenStatus.Text = "NOT STOLEN"
+	end
+	local v1060 = game.ReplicatedStorage.ACS_Engine.GunModels.Client:FindFirstChild(p36.Model)
+	if v1060 then
+		local v1061 = v1060:Clone()
+		local v1062 = viewportmodule.new(l__Viewport__58, v57)
+		local v1063, v1064 = v1061:GetBoundingBox()
+		local v1065 = math.max(v1064.X, v1064.Y, v1064.Z)
+		local v1066 = v1065 / math.tan(math.rad(v57.FieldOfView)) * 0.2
+		v1061:PivotTo(CFrame.new(Vector3.new(0, 0, 0)))
+		v1061.Parent = l__Viewport__61
+		v60.CFrame = CFrame.Angles(0, 1.5707963267948966, 0) * CFrame.new(v62 + Vector3.new(0, 0, v1065 / 2 + v1066), v62)
+		v1062:SetModel(v1061)
+	end
+end
+WeaponLookup.SearchFrame.TextBox.FocusLost:Connect(function(p37)
+	local v1067 = false
+	local v1068 = nil
+	if p37 == false then
+		return
+	end
+	for v1069, v1070 in pairs((GetInfo:InvokeServer("Weapons"))) do
+		if v1070.SerialNum:lower() == WeaponLookup.SearchFrame.TextBox.Text:lower() then
+			v1067 = true
+			v1068 = v1070
+			break
+		end
+	end
+	if v1067 ~= true then
+		Audios.Error:Play()
+		WeaponLookup.SearchFrame.TextBox.Text = ""
+		return
+	end
+	mouse.Icon = "http://www.roblox.com/asset?id=5018953955"
+	WeaponInfo(v1068)
+	wait(1)
+	mouse.Icon = "http://www.roblox.com/asset?id=5018892087"
+	WeaponLookup.InfoFrame.Visible = true
+	WeaponLookup.SearchFrame.Visible = false
+end)
+WeaponLookup.InfoFrame.Close.MouseButton1Click:Connect(function()
+	ClearWeapon()
+	WeaponLookup.SearchFrame.TextBox.Text = ""
+	WeaponLookup.InfoFrame.Visible = false
+	WeaponLookup.SearchFrame.Visible = true
+end)
+print("DEBUG: WEAPON INFO")
+
+
+
+DesktopFrame.Reports.ReportsFrame.Frame.ButtonList.NewTrafficReport.MouseButton1Click:Connect(function()
+	if DesktopFrame.Additonial.TrafficStopReport.Visible == true then
+		return
+	end
+	DesktopFrame.Additonial.TrafficStopReport.Visible = true
+	DesktopFrame.Additonial.TrafficStopReport.ScrollingFrame.Frame.TicketFrame.Frame.DateFrame.Frame.TextLabel.Text = tostring(date.day) .. " " .. CheckMonth() .. " " .. tostring(date.year)
+	DesktopFrame.Additonial.TrafficStopReport.ScrollingFrame.Frame.TicketFrame.Frame.TimeFrame.Frame.TextLabel.Text = gettime()
+	DesktopFrame.Additonial.TrafficStopReport.ScrollingFrame.Frame.TicketFrame.Frame.OfficerName.OfficerName.Text = LocalPlayer.Name
+end)
+DesktopFrame.Additonial.TrafficStopReport.CloseFrame.close.MouseButton1Click:Connect(function()
+	DesktopFrame.Additonial.TrafficStopReport.Visible = false
+	for v1071, v1072 in pairs(DesktopFrame.Additonial.TrafficStopReport:GetDescendants()) do
+		if v1072:IsA("TextBox") then
+			v1072.Text = ""
+		end
+	end
+end)
+DesktopFrame.Additonial.TrafficStopReport.ScrollingFrame.Frame.TicketFrame.Frame.SignButton.MouseButton1Click:Connect(function()
+	local v1073 = true
+	local v1074 = {}
+	for v1075, v1076 in pairs(DesktopFrame.Additonial.TrafficStopReport:GetDescendants()) do
+		if v1076:IsA("TextBox") then
+			if v1076.Text:gsub(" ", "") ~= "" then
+				v1074[v1076.Name] = v1076.Text
+			else
+				local v1077 = TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+				TweenService:Create(v1076, v1077, {
+					PlaceholderColor3 = Color3.fromRGB(162, 0, 0)
+				}):Play()
+				wait(0.45)
+				TweenService:Create(v1076, v1077, {
+					PlaceholderColor3 = Color3.fromRGB(178, 178, 178)
+				}):Play()
+				v1073 = false
+			end
+		end
+	end
+	if v1073 == true then
+		SendLog:FireServer(v1074, "TrafficReport")
+		for v1078, v1079 in pairs(DesktopFrame.Additonial.TrafficStopReport:GetDescendants()) do
+			if v1079:IsA("TextBox") then
+				v1079.Text = ""
+			end
+		end
+		DesktopFrame.Additonial.TrafficStopReport.Visible = false
+		local v1080 = {}
+	end
+end)
+print("DEBUG: Traffic Stop Report")
+
+DesktopFrame.Reports.ReportsFrame.Frame.ButtonList.NewIncident.MouseButton1Click:Connect(function()
+	if DesktopFrame.Additonial.IncidentReport.Visible == true then
+		return
+	end
+	DesktopFrame.Additonial.IncidentReport.Visible = true
+	DesktopFrame.Additonial.IncidentReport.ScrollingFrame.Frame.TicketFrame.Frame.DateFrame.Frame.TextLabel.Text = tostring(date.day) .. " " .. CheckMonth() .. " " .. tostring(date.year)
+	DesktopFrame.Additonial.IncidentReport.ScrollingFrame.Frame.TicketFrame.Frame.TimeFrame.Frame.TextLabel.Text = gettime()
+	DesktopFrame.Additonial.IncidentReport.ScrollingFrame.Frame.TicketFrame.Frame.OfficerName["Officer Name"].Text = LocalPlayer.Name
+end)
+
+DesktopFrame.Additonial.IncidentReport.CloseFrame.close.MouseButton1Click:Connect(function()
+	DesktopFrame.Additonial.IncidentReport.Visible = false
+	for v1081, v1082 in pairs(DesktopFrame.Additonial.IncidentReport:GetDescendants()) do
+		if v1082:IsA("TextBox") then
+			v1082.Text = ""
+		end
+	end
+end)
+print("DEBUG: MISC REPORT STUFF")
+
+DesktopFrame.Additonial.PenalCodes.CloseFrame.close.MouseButton1Click:Connect(function()
+	DesktopFrame.Additonial.PenalCodes.Visible = false
+	DesktopFrame.Additonial.PenalCodes.ScrollingFrame.LocalScript.Enabled = false
+	
+end)
+DesktopFrame.Reports.ReportsFrame.Frame.ButtonList.PenalCodes.MouseButton1Click:Connect(function()
+	DesktopFrame.Additonial.PenalCodes.Visible = true
+	DesktopFrame.Additonial.PenalCodes.ScrollingFrame.LocalScript.Enabled = true
+end)
+print("DEBUG: PENAL CODES")
+
+DesktopFrame.Additonial.IncidentReport.ScrollingFrame.Frame.TicketFrame.Frame.SignButton.MouseButton1Click:Connect(function()
+	local v1094 = true
+	local v1095 = {}
+	for v1096, v1097 in pairs(DesktopFrame.Additonial.IncidentReport:GetDescendants()) do
+		if v1097:IsA("TextBox") then
+			if v1097.Text:gsub(" ", "") ~= "" then
+				v1095[v1097.Name] = v1097.Text
+			else
+				local v1098 = TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+				TweenService:Create(v1097, v1098, {
+					PlaceholderColor3 = Color3.fromRGB(162, 0, 0)
+				}):Play()
+				wait(0.45)
+				TweenService:Create(v1097, v1098, {
+					PlaceholderColor3 = Color3.fromRGB(178, 178, 178)
+				}):Play()
+				v1094 = false
+			end
+		end
+	end
+	v1095.Time = gettime()
+	v1095.Date = tostring(date.day) .. " " .. CheckMonth() .. " " .. tostring(date.year)
+	if v1094 == true then
+		SendLog:FireServer(v1095, "IncidentReport")
+		for v1099, v1100 in pairs(DesktopFrame.Additonial.IncidentReport:GetDescendants()) do
+			if v1100:IsA("TextBox") then
+				v1100.Text = ""
+			end
+		end
+		DesktopFrame.Additonial.IncidentReport.Visible = false
+		local v1101 = {}
+	end
+end)
+print("DEBUG: INCIDENT REPORTS")
+
+
+DesktopFrame.Reports.ReportsFrame.Frame.ButtonList.SearchReport.MouseButton1Click:Connect(function()
+	DesktopFrame.Additonial.SearchReport.Visible = true
+	DesktopFrame.Additonial.SearchReport.ScrollingFrame.Frame.TicketFrame.Frame.DateFrame.Frame.TextLabel.Text = tostring(date.day) .. " " .. CheckMonth() .. " " .. tostring(date.year)
+	DesktopFrame.Additonial.SearchReport.ScrollingFrame.Frame.TicketFrame.Frame.TimeFrame.Frame.TextLabel.Text = gettime()
+	DesktopFrame.Additonial.SearchReport.ScrollingFrame.Frame.TicketFrame.Frame.OfficerName.TextBox.Text = LocalPlayer.Name
+	DesktopFrame.Additonial.SearchReport.ScrollingFrame.Frame.TicketFrame.Frame.DeptFrame.TextBox.Text = CheckRank:InvokeServer("Department")
+end)
+DesktopFrame.Additonial.SearchReport.CloseFrame.close.MouseButton1Click:Connect(function()
+	DesktopFrame.Additonial.SearchReport.Visible = false
+	for v1102, v1103 in pairs(DesktopFrame.Additonial.SearchReport:GetDescendants()) do
+		if v1103:IsA("TextBox") then
+			v1103.Text = ""
+		end
+	end
+end)
+DesktopFrame.Additonial.SearchReport.ScrollingFrame.Frame.TicketFrame.Frame.SignButton.MouseButton1Click:Connect(function()
+	local v1104 = true
+	local v1105 = {}
+	for v1106, v1107 in pairs(DesktopFrame.Additonial.SearchReport:GetDescendants()) do
+		if v1107:IsA("TextBox") then
+			if v1107.Text:gsub(" ", "") ~= "" then
+				table.insert(v1105, v1107.Text)
+			else
+				local v1108 = TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+				TweenService:Create(v1107, v1108, {
+					PlaceholderColor3 = Color3.fromRGB(162, 0, 0)
+				}):Play()
+				wait(0.45)
+				TweenService:Create(v1107, v1108, {
+					PlaceholderColor3 = Color3.fromRGB(178, 178, 178)
+				}):Play()
+				v1104 = false
+			end
+		end
+	end
+	if v1104 == true then
+		SendLog:FireServer(v1105, "SearchLog")
+		for v1109, v1110 in pairs(DesktopFrame.Additonial.SearchReport:GetDescendants()) do
+			if v1110:IsA("TextBox") then
+				v1110.Text = ""
+			end
+		end
+		DesktopFrame.Additonial.SearchReport.Visible = false
+	end
+end)
+print("DEBUG: SEARCH REPORT")
+
+char:WaitForChild("Humanoid").Died:Connect(function()
+	ClearViewport()
+	script.Parent.Parent.Parent = ReplicatedStorage
+end)
+print("DEBUG: DEATH REMOVE FEATURE")
+
+script.Parent.Parent:GetPropertyChangedSignal("Enabled"):Connect(function()
+	if script.Parent.Parent.Enabled == false then
+		mouse.Icon = ""
+		u30 = true
+		return
+	end
+	mouse.Icon = "http://www.roblox.com/asset?id=5018892087"
+	u30 = false
+end)
+print("DEBUG: GUI ENABLED")
+
+BoloEvent.OnClientEvent:Connect(function(p39, p40)
+	if p40 then
+		local v1111 = BoloFrame.ActiveBolos:FindFirstChild(p40)
+		if v1111 then
+			v1111:Destroy()
+		end
+	end
+	if p39 then
+		UpdateBolos(p39)
+	end
+end)
+print("DEBUG: BOLO CLIENT EVENT")
+
+
+print("DEBUG: END, UPDATING")
+UpdateCals()
+UpdateBolos()
+print("DEBUG: END OF MDT HANDLER")
